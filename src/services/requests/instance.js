@@ -8,6 +8,13 @@ export const instance = axios.create({
   headers: {'Authorization': 'Bearer F8eHCcHH69mt74EZ7Te0'}
 });
 
-export const getCharacters = () => {
-    return instance.get(baseURL + "/character")
+export const getCharacters = async (page) => {
+    return (await instance.get(baseURL + `/character?limit=20&offset=${page * 20}]}`)).data.docs
+    .map((entry) => {
+      const {_id, ...attributes} = entry
+      return {
+        _id,
+        attributes
+      }
+    })
 }
