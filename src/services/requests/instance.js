@@ -18,3 +18,19 @@ export const getCharacters = async (page) => {
       }
     })
 }
+
+export const getTotalCharacters = async()=>{
+  return (await instance.get(baseURL + `/character?limit=1`)).data.total
+}
+
+export const getQuotes = async (characterId, page) => {
+  return (await instance.get(baseURL + `/character/${characterId}/quote?limit=20&offset=${page * 20}]}`)).data.docs
+  .map((entry) => {
+    //transform object to adapt to the table interface
+    const {_id, ...attributes} = entry
+    return {
+      _id,
+      attributes
+    }
+  })
+}

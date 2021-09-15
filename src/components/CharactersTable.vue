@@ -16,18 +16,31 @@
         </td>
       </thead>
       <tbody>
-        <tr v-for="entry in entries" :key="entry._id">
+        <tr
+          @click="selectRow(entry._id)"
+          v-for="entry in entries"
+          :key="entry._id"
+          :class="{ selected: this.selectedRow === entry._id }"
+        >
           <td v-for="key in visibleAttributes" :key="key">
             {{ entry.attributes[key] }}
           </td>
         </tr>
       </tbody>
     </table>
+    <button @click="pageDown" :disabled="page === 0">Back</button>
+    <span>Page {{ page }} of {{ Math.trunc(totalEntries / 20) }} </span>
+    <button @click="pageUp" :disabled="page === Math.trunc(totalEntries / 20)">
+      Forward
+    </button>
   </div>
 </template>
 
 <script>
-import { getCharacters } from "../services/requests/instance.js";
+import {
+  getCharacters,
+  getTotalCharacters
+} from "../services/requests/instance.js";
 import { getColumns } from "../services/table/columns.js";
 
 export default {
@@ -35,6 +48,7 @@ export default {
   data() {
     return {
       entries: null,
+      totalEntries: 0,
       columns: null,
       loaded: false,
       errored: false,
@@ -42,10 +56,22 @@ export default {
       fields: [],
       selectedAttributes: [],
 
-      page: 0
+      page: 0,
+      selectedRow: null
     };
   },
-
+  methods: {
+    selectRow(rowId) {
+      this.selectedRow = rowId;
+      this.$emit("update:modelValue", rowId);
+    },
+    async pageDown() {
+      this.entries = await getCharacters(--this.page);
+    },
+    async pageUp() {
+      this.entries = await getCharacters(++this.page);
+    }
+  },
   computed: {
     visibleAttributes() {
       return this.columns.filter(attribute =>
@@ -56,6 +82,7 @@ export default {
   async mounted() {
     try {
       this.entries = await getCharacters(this.page);
+      this.totalEntries = await getTotalCharacters();
       this.columns = getColumns(this.entries);
       this.selectedAttributes = this.columns;
 
@@ -77,5 +104,10 @@ td {
 
 table {
   width: 100%;
+  resize: horizontal;
+}
+
+tr.selected {
+  background-color: bisque;
 }
 </style>
