@@ -49,7 +49,7 @@
 <script>
 import {
   getCharacters,
-  getTotalCharacters
+  getTotalEntries
 } from "../services/requests/instance.js";
 import { getColumns } from "../services/table/columns.js";
 import MultiSelectionFilter from "./MultiSelectionFilter.vue";
@@ -97,7 +97,7 @@ export default {
     async updateFilters(update) {
       this.filters = { ...this.filters, ...update };
       this.entries = await getCharacters(this.page, this.filters);
-      this.totalEntries = await getTotalCharacters(this.filters);
+      this.totalEntries = await getTotalEntries("character", this.filters);
     }
   },
   computed: {
@@ -113,7 +113,7 @@ export default {
   async mounted() {
     try {
       this.entries = await getCharacters(this.page);
-      this.totalEntries = await getTotalCharacters();
+      this.totalEntries = await getTotalEntries("character");
       this.columns = getColumns(this.entries);
       this.selectedAttributes = this.columns;
 

@@ -1,4 +1,7 @@
 export const getColumns = (entries) => {
+    if(!entries[0]) {
+        return null;
+    }
     return sortColumns(Object.keys(entries[0].attributes))
 } 
 

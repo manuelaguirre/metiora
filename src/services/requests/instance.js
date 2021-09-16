@@ -33,16 +33,16 @@ const getFilterString = (filter) => {
   return filterSubStrings;
 };
 
-export const getTotalCharacters = async (filter = {}) => {
-  return (await instance.get(baseURL + `/character?limit=1`+
+export const getTotalEntries = async (category, filter = {}) => {
+  return (await instance.get(baseURL + `/${category}?limit=1`+
   getFilterString(filter),)).data.total;
 };
 
-export const getQuotes = async (characterId, page) => {
+export const getQuotes = async (characterId, page, filter = {}) => {
   return (await instance.get(
     baseURL +
-    `/character/${characterId}/quote?sort=dialog:asc&limit=20&offset=${page *
-    20}]}`,
+    `/quote?sort=dialog:asc&limit=20&offset=${page *
+    20}&character=${characterId}` + getFilterString(filter),
   )).data.docs
     .map((entry) => {
       //transform object to adapt to the table interface
