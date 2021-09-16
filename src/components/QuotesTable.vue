@@ -2,9 +2,9 @@
   <div v-if="loaded">
     <table>
       <thead>
-        <td v-for="key in columns" :key="key">
+        <th v-for="key in columns" :key="key">
           {{ key }}
-        </td>
+        </th>
       </thead>
       <tbody>
         <tr v-for="entry in entries" :key="entry._id">
@@ -12,9 +12,9 @@
             {{ entry.attributes[key] }}
           </td>
           <td class="actions">
-            <button @click="openEntryEditModal">Edit</button>
-            <button @click="duplicateEntry">Duplicate</button>
-            <button @click="deleteEntry">Delete</button>
+            <button @click="openEntryEditModal(entry)">Edit</button>
+            <button @click="duplicateEntry(entry)">Duplicate</button>
+            <button @click="deleteEntry(entry)">Delete</button>
           </td>
         </tr>
       </tbody>
@@ -29,18 +29,33 @@
       category="movie"
       :options="movies"
     />
+    <div v-if="showEditModal">
+      <entry-input-modal
+        :dialog="modalDialog"
+        @close="closeEditModal"
+        @submit="submitEdit"
+      />
+    </div>
   </div>
 </template>
 
 <script>
-import { getQuotes, getTotalEntries } from "../services/requests/instance";
+import {
+  getQuotes,
+  getTotalEntries,
+  editQuote,
+  duplicateQuote,
+  deleteQuote
+} from "../services/requests/instance";
 import { getColumns } from "../services/table/columns";
 import MultiSelectionFilter from "./MultiSelectionFilter.vue";
+import EntryInputModal from "./EntryInputModal.vue";
 import { movies, moviesIds } from "../services/models/movies";
 
 export default {
   components: {
-    MultiSelectionFilter
+    MultiSelectionFilter,
+    EntryInputModal
   },
   props: {
     selected: String
@@ -51,8 +66,14 @@ export default {
       totalEntries: 0,
       columns: null,
       loaded: false,
+
       movies,
-      page: 0
+
+      page: 0,
+
+      showEditModal: false,
+      modalDialog: null,
+      editedQuote: null
     };
   },
   methods: {
@@ -65,9 +86,27 @@ export default {
       this.totalEntries = await getTotalEntries("quote", this.filters);
     },
 
-    deleteEntry() {},
-    duplicateEntry() {},
-    openEntryEditModal() {}
+    deleteEntry(entry) {
+      console.log(entry._id);
+      deleteQuote(entry._id);
+    },
+    duplicateEntry(entry) {
+      duplicateQuote(entry.attributes);
+    },
+    openEntryEditModal(entry) {
+      this.modalDialog = entry.attributes.dialog;
+      this.showEditModal = true;
+      this.editedQuote = entry._id;
+    },
+    submitEdit(edit) {
+      editQuote(this.editedQuote, edit);
+      this.closeEditModal();
+    },
+    closeEditModal() {
+      this.showEditModal = false;
+      this.modalDialog = null;
+      this.editedQuote = null;
+    }
   },
   watch: {
     async selected(characterId) {
