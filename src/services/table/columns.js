@@ -4,6 +4,5 @@ export const getColumns = (entries) => {
 
 export const sortColumns= (columns) => {
     // Put "name" first
-    console.log(columns)
     return [columns.splice(columns.indexOf("name"), 1)[0], ...columns]
 }

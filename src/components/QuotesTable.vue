@@ -7,12 +7,7 @@
         </td>
       </thead>
       <tbody>
-        <tr
-          @click="selectRow(entry._id)"
-          v-for="entry in entries"
-          :key="entry._id"
-          :class="{ selected: this.selectedRow === entry._id }"
-        >
+        <tr>
           <td v-for="key in columns" :key="key">
             {{ entry.attributes[key] }}
           </td>

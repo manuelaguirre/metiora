@@ -1,5 +1,5 @@
 <template>
-  <div v-if="loaded">
+  <div v-if="entries">
     <div v-for="key in columns" :key="key" class="visible-fields-checkbox">
       <input
         type="checkbox"
@@ -9,6 +9,16 @@
       />
       <label :for="key">{{ key }}</label>
     </div>
+    <multi-selection-filter
+      category="race"
+      :options="race"
+      @updateFilter="updateFilters"
+    />
+    <single-selection-filter
+      category="gender"
+      :options="genders"
+      @updateFilter="updateFilters"
+    />
     <table>
       <thead>
         <td v-for="key in visibleAttributes" :key="key">
@@ -29,7 +39,7 @@
       </tbody>
     </table>
     <button @click="pageDown" :disabled="page === 0">Back</button>
-    <span>Page {{ page }} of {{ Math.trunc(totalEntries / 20) }} </span>
+    <span>Page {{ page + 1 }} of {{ Math.trunc(totalEntries / 20) + 1 }} </span>
     <button @click="pageUp" :disabled="page === Math.trunc(totalEntries / 20)">
       Forward
     </button>
@@ -42,9 +52,16 @@ import {
   getTotalCharacters
 } from "../services/requests/instance.js";
 import { getColumns } from "../services/table/columns.js";
+import MultiSelectionFilter from "./MultiSelectionFilter.vue";
+import SingleSelectionFilter from "./SingleSelectionFilter.vue";
+import { race, genders } from "../services/models/character";
 
 export default {
   name: "CharactersTable",
+  components: {
+    MultiSelectionFilter,
+    SingleSelectionFilter
+  },
   data() {
     return {
       entries: null,
@@ -56,6 +73,10 @@ export default {
       fields: [],
       selectedAttributes: [],
 
+      filters: {},
+      race,
+      genders,
+
       page: 0,
       selectedRow: null
     };
@@ -65,18 +86,28 @@ export default {
       this.selectedRow = rowId;
       this.$emit("update:modelValue", rowId);
     },
+
     async pageDown() {
-      this.entries = await getCharacters(--this.page);
+      this.entries = await getCharacters(--this.page, this.filters);
     },
     async pageUp() {
-      this.entries = await getCharacters(++this.page);
+      this.entries = await getCharacters(++this.page, this.filters);
+    },
+
+    async updateFilters(update) {
+      this.filters = { ...this.filters, ...update };
+      this.entries = await getCharacters(this.page, this.filters);
+      this.totalEntries = await getTotalCharacters(this.filters);
     }
   },
   computed: {
     visibleAttributes() {
-      return this.columns.filter(attribute =>
-        this.selectedAttributes.includes(attribute)
-      );
+      if (this.columns) {
+        return this.columns.filter(attribute =>
+          this.selectedAttributes.includes(attribute)
+        );
+      }
+      return null;
     }
   },
   async mounted() {
