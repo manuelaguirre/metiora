@@ -1,10 +1,17 @@
 <template>
   <div v-if="loaded">
     <table>
+      <caption>
+        Quotes by
+        <b>
+          {{ characterName }}
+        </b>
+      </caption>
       <thead>
         <th v-for="key in columns" :key="key">
           {{ key }}
         </th>
+        <th>Actions</th>
       </thead>
       <tbody>
         <tr v-for="entry in entries" :key="entry._id">
@@ -40,6 +47,8 @@
 </template>
 
 <script>
+import MultiSelectionFilter from "./MultiSelectionFilter.vue";
+import EntryInputModal from "./EntryInputModal.vue";
 import {
   getQuotes,
   getTotalEntries,
@@ -48,8 +57,6 @@ import {
   deleteQuote
 } from "../services/requests/instance";
 import { getColumns } from "../services/table/columns";
-import MultiSelectionFilter from "./MultiSelectionFilter.vue";
-import EntryInputModal from "./EntryInputModal.vue";
 import { movies, moviesIds } from "../services/models/movies";
 
 export default {
@@ -58,7 +65,8 @@ export default {
     EntryInputModal
   },
   props: {
-    selected: String
+    selected: String,
+    characterName: String
   },
   data() {
     return {
@@ -123,12 +131,41 @@ table,
 th,
 td {
   border: 1px solid black;
-  overflow: hidden;
+  overflow: auto;
+}
+
+th,
+td {
+  padding: 1rem;
+  position: relative;
 }
 
 table {
   width: 100%;
-  resize: horizontal;
+  border-collapse: collapse;
+}
+
+caption {
+  font-weight: bold;
+  font-size: 24px;
+  text-align: left;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+thead {
+  background-color: #333;
+  font-weight: 700;
+  color: white;
+  text-transform: capitalize;
+}
+
+tbody tr:nth-child(odd) {
+  background-color: #fff;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #eee;
 }
 
 tr.selected {
