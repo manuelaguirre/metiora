@@ -1,5 +1,6 @@
 <template>
-  <select :name="this.category" :id="this.category" v-model="selectedOption">
+  <select :name="category" :id="category" v-model="selectedOption">
+    <option value="" disabled selected hidden>pipingo</option>
     <option v-for="option in options" :key="option">{{ option }}</option>
   </select>
 </template>

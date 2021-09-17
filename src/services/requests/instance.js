@@ -51,6 +51,7 @@ export const getQuotes = async (characterId, page, filter = {}) => {
     .map((entry) => {
       //transform object to adapt to the table interface
       const { _id, ...attributes } = entry;
+      delete attributes.character;
       return {
         _id,
         attributes,

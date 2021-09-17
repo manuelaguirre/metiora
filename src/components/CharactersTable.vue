@@ -20,14 +20,17 @@
       @updateFilter="updateFilters"
     />
     <table>
+      <caption>
+        Characters
+      </caption>
       <thead>
-        <td v-for="key in visibleAttributes" :key="key">
+        <th v-for="key in visibleAttributes" :key="key" :value="key">
           {{ key }}
-        </td>
+        </th>
       </thead>
       <tbody>
         <tr
-          @click="selectRow(entry._id)"
+          @click="selectRow(entry)"
           v-for="entry in entries"
           :key="entry._id"
           :class="{ selected: this.selectedRow === entry._id }"
@@ -47,13 +50,13 @@
 </template>
 
 <script>
+import MultiSelectionFilter from "./MultiSelectionFilter.vue";
+import SingleSelectionFilter from "./SingleSelectionFilter.vue";
 import {
   getCharacters,
   getTotalEntries
 } from "../services/requests/instance.js";
 import { getColumns } from "../services/table/columns.js";
-import MultiSelectionFilter from "./MultiSelectionFilter.vue";
-import SingleSelectionFilter from "./SingleSelectionFilter.vue";
 import { race, genders } from "../services/models/character";
 
 export default {
@@ -82,9 +85,13 @@ export default {
     };
   },
   methods: {
-    selectRow(rowId) {
-      this.selectedRow = rowId;
-      this.$emit("update:modelValue", rowId);
+    selectRow(entry) {
+      this.selectedRow = entry._id;
+      console.log(entry);
+      this.$emit("update:modelValue", {
+        _id: entry._id,
+        name: entry.attributes.name
+      });
     },
 
     async pageDown() {
@@ -130,12 +137,12 @@ table,
 th,
 td {
   border: 1px solid black;
-  overflow: hidden;
+  overflow: auto;
+  resize: horizontal;
 }
 
 table {
   width: 100%;
-  resize: horizontal;
 }
 
 tr.selected {
