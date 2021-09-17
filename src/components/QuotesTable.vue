@@ -127,48 +127,4 @@ export default {
 </script>
 
 <style>
-table,
-th,
-td {
-  border: 1px solid black;
-  overflow: auto;
-}
-
-th,
-td {
-  padding: 1rem;
-  position: relative;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-caption {
-  font-weight: bold;
-  font-size: 24px;
-  text-align: left;
-  color: #333;
-  margin-bottom: 1rem;
-}
-
-thead {
-  background-color: #333;
-  font-weight: 700;
-  color: white;
-  text-transform: capitalize;
-}
-
-tbody tr:nth-child(odd) {
-  background-color: #fff;
-}
-
-tbody tr:nth-child(even) {
-  background-color: #eee;
-}
-
-tr.selected {
-  background-color: bisque;
-}
 </style>
