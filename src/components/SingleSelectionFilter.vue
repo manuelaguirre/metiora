@@ -1,6 +1,6 @@
 <template>
   <select :name="category" :id="category" v-model="selectedOption">
-    <option value="" disabled selected hidden>pipingo</option>
+    <option selected disabled>Gender</option>
     <option v-for="option in options" :key="option">{{ option }}</option>
   </select>
 </template>
@@ -28,4 +28,7 @@ export default {
 </script>
 
 <style>
+select {
+  height: 1.5rem;
+}
 </style>

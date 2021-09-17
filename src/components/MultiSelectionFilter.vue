@@ -3,6 +3,7 @@
     <input type="checkbox" :id="key" :value="key" v-model="selectedOptions" />
     <label :for="key">{{ key }}</label>
   </div>
+  <button @click="selectAll">Select All</button>
 </template>
 
 <script>
@@ -17,6 +18,11 @@ export default {
     return {
       selectedOptions: this.options
     };
+  },
+  methods: {
+    selectAll() {
+      this.selectedOptions = this.options;
+    }
   },
   watch: {
     selectedOptions(update) {

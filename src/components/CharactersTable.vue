@@ -1,24 +1,33 @@
 <template>
   <div v-if="entries">
-    <div v-for="key in columns" :key="key" class="visible-fields-checkbox">
-      <input
-        type="checkbox"
-        :id="key"
-        :value="key"
-        v-model="selectedAttributes"
-      />
-      <label :for="key">{{ key }}</label>
+    <h3>Visible Fields</h3>
+    <div id="visible-fields-cont">
+      <div v-for="key in columns" :key="key" class="visible-fields">
+        <input
+          type="checkbox"
+          :id="key"
+          :value="key"
+          v-model="selectedAttributes"
+        />
+        <label :for="key">{{ key }}</label>
+      </div>
     </div>
-    <multi-selection-filter
-      category="race"
-      :options="race"
-      @updateFilter="updateFilters"
-    />
-    <single-selection-filter
-      category="gender"
-      :options="genders"
-      @updateFilter="updateFilters"
-    />
+    <h3>Race Filters</h3>
+    <div class="filters">
+      <multi-selection-filter
+        category="race"
+        :options="race"
+        @updateFilter="updateFilters"
+      />
+    </div>
+    <h3>Gender Filter</h3>
+    <div id="gender-cont">
+      <single-selection-filter
+        category="gender"
+        :options="genders"
+        @updateFilter="updateFilters"
+      />
+    </div>
     <table>
       <caption>
         Characters
@@ -87,7 +96,6 @@ export default {
   methods: {
     selectRow(entry) {
       this.selectedRow = entry._id;
-      console.log(entry);
       this.$emit("update:modelValue", {
         _id: entry._id,
         name: entry.attributes.name
@@ -147,5 +155,40 @@ table {
 
 tr.selected {
   background-color: bisque;
+}
+
+#visible-fields-cont {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background-color: white;
+  width: 50vw;
+  text-align: left;
+}
+
+#visible-fields-cont h3 {
+  grid-row: 1 / 1;
+}
+
+h3 {
+  text-align: left;
+  margin: 1rem;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  width: 50vw;
+  text-align: left;
+  background-color: white;
+}
+
+#gender-cont {
+  width: 50%;
+  text-align: left;
+  margin: 1rem;
+}
+
+td {
+  cursor: pointer;
 }
 </style>

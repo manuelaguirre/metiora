@@ -1,5 +1,5 @@
 <template>
-  <div v-if="loaded">
+  <div v-if="loaded && entries.length">
     <table>
       <caption>
         Quotes by
@@ -44,6 +44,7 @@
       />
     </div>
   </div>
+  <h2 v-else>No quotes found.</h2>
 </template>
 
 <script>
@@ -95,7 +96,6 @@ export default {
     },
 
     deleteEntry(entry) {
-      console.log(entry._id);
       deleteQuote(entry._id);
     },
     duplicateEntry(entry) {
@@ -114,12 +114,19 @@ export default {
       this.showEditModal = false;
       this.modalDialog = null;
       this.editedQuote = null;
+    },
+    async pageDown() {
+      this.entries = await getQuotes(this.selected, --this.page, this.filters);
+    },
+    async pageUp() {
+      this.entries = await getQuotes(this.selected, ++this.page, this.filters);
     }
   },
   watch: {
     async selected(characterId) {
       this.entries = await getQuotes(characterId, 0);
       this.columns = getColumns(this.entries);
+      this.totalEntries = await getTotalEntries("quote", this.filters);
       this.loaded = true;
     }
   }
@@ -127,4 +134,7 @@ export default {
 </script>
 
 <style>
+button {
+  margin: 4px;
+}
 </style>

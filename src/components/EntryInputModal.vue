@@ -1,6 +1,6 @@
 <template>
-  <div class="overlay" @click="closeModal">
-    <div class="edit-dialog">
+  <div class="overlay" @click.prevent="closeModal">
+    <div class="edit-dialog" @click.stop.prevent>
       <h5>Edit Quote</h5>
       <div class="text-container">
         <textarea
@@ -42,7 +42,7 @@ export default {
 
 <style>
 .overlay {
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.6);
   position: fixed;
   top: 0;
   left: 0;
@@ -69,7 +69,8 @@ h5 {
   text-align: center;
   padding: 1rem;
   border: solid black 1px;
-  border-radius: 2px;
+  border-radius: 5px;
+  z-index: 10;
 }
 
 .text-container {
@@ -90,6 +91,11 @@ h5 {
   display: block;
   height: 20%;
   float: right;
-  margin-top: 1rem;
+  margin: 1rem;
+}
+.button-container > button {
+  margin: 0 1em;
+  font-size: 1rem;
+  padding: 8px;
 }
 </style>

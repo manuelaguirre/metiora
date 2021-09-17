@@ -1,4 +1,5 @@
 import axios from "axios";
+import { movieNames } from "../models/movies";
 import { addAction } from "../storage/storage"
 
 const baseURL = "https://the-one-api.dev/v2";
@@ -52,6 +53,7 @@ export const getQuotes = async (characterId, page, filter = {}) => {
       //transform object to adapt to the table interface
       const { _id, ...attributes } = entry;
       delete attributes.character;
+      attributes.movie = movieNames[attributes.movie]
       return {
         _id,
         attributes,
